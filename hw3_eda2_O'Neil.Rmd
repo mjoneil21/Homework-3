@@ -97,33 +97,36 @@ subset(county_MI, county_MI$peninsula =="UP")
 Now do the same thing but use dplyr. Do NOT use the pipe operator.
 
 ```{r filter1}
-
+filter(county_MI, county_MI$peninsula =="UP")
 ```
 
 Repeat using dplyr and using the pipe operator.
 
 ```{r filter2}
-#county_MI 
+county_MI %>% filter(peninsula =="UP")
 ```
 
 List rows for counties with population greater than or equal to 200000. Use dplyr.
+using the pipe to feed the data frame to the arange function, I tried mutate first but it seemed overly complicated for this task.
 
 ```{r filter3}
-
+county_MI %>% filter(TotalPop >= 200000)
 ```
 
 Counties with population greater than or equal to 200000 and sorted in
 descending order by population. Use dplyr.
 
 ```{r filter4}
-
+county_MI %>% filter(TotalPop >= 200000) %>% arrange(desc(TotalPop))
 ```
 
 Counties with median income between 30000 and 40000. Sort in ascending order
 by median income.
 
-```{r filter5}
+The arrange function automatically sorts by ascending order. piped the data frame to the subset function which was in turn piped to the arrange function
 
+```{r filter5}
+county_MI %>% subset(Income>=30000 & Income<=40000) %>% arrange(Income)
 ```
 
 ### Problem 2 - Selecting columns
