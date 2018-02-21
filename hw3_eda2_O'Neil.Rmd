@@ -91,7 +91,7 @@ Using basic R commands (i.e. **no plyr or dplyr**) list all the rows for countie
 Peninsula.
 
 ```{r up_counties}
-#county_MI
+subset(county_MI, county_MI$peninsula =="UP")
 ```
 
 Now do the same thing but use dplyr. Do NOT use the pipe operator.
