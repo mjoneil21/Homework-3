@@ -137,29 +137,27 @@ Population by county sorted descending by population. Just show county and
 population.
 
 ```{r}
-# county_MI %>%
-#   ???
-#   arrange(???)
+county_MI %>% arrange(desc(TotalPop)) %>% select(County, TotalPop)
 ```
 
 Counties with population < 50000 and just the columns County, peninsula
 and TotalPop. Sort ascending by population.
 
 ```{r select1}
-
+county_MI %>% filter(TotalPop <50000) %>% select(County, peninsula, TotalPop) %>% arrange(desc(TotalPop))
 ```
 
 Counties with population < 50000 and just the the first 5 columns (except for
 column 3) along with Income and Poverty. Sort descending by Poverty.
 
 ```{r select2}
-
+county_MI %>% filter(TotalPop < 50000) %>% select(County, peninsula, CensusId, State.Code, Income, Poverty) %>% arrange(desc(Poverty))
 ```
 
 Counties with population > 100000 and just the the first 2 columns, TotalPop, and any column starting with "Inc". Sort descending by Income.
 
 ```{r select3}
-
+county_MI %>% filter(TotalPop > 100000) %>% select(County, peninsula, TotalPop, Income, IncomeErr, IncomePerCap, IncomePerCapErr) %>% arrange(desc(Income))
 ```
 
 ### Problem 3 - Create new columns with mutate
