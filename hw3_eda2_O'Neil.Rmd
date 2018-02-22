@@ -169,32 +169,38 @@ county. First do it by NOT saving the computed column. Just compute it
 and display the columns County, TotalPop, pct_F. Sort descending by pct_F.
 
 ```{r mutate1}
-# county_MI %>%
-#   mutate(pct_F = ???) %>%
-#   arrange(???) %>%
-#   ???
+ county_MI %>%
+   mutate(pct_F = Women/TotalPop) %>%
+   select(County, TotalPop, pct_F) %>%
+   arrange(desc(pct_F))
 ```
 
 Now compute pct_F and save the pct_F column (along with the existing columns) in
 a new data frame called county_MI_x.
 
 ```{r mutate2}
-#county_MI_x <- ???
+county_MI_x <- county_MI %>%
+   mutate(pct_F = Women/TotalPop) %>%
+   select(County, TotalPop, pct_F) 
 ```
 
 Show that it worked by using select to show County, TotalPop, pct_F in
 the new data frame.
 
 ```{r mutate3}
-# county_MI_x %>%
-#   ???
+ county_MI_x %>%
+   select(County, TotalPop, pct_F)
 ```
 
 County with highest percentage of women? Lowest percentage of women? Create dplyr
 statements that make it easy to answer these questions.
 
 ```{r mutate4a}
+ county_MI_x %>%
+   select(County, TotalPop, pct_F) %>% arrange(desc(pct_F))
 
+county_MI_x %>%
+   select(County, TotalPop, pct_F) %>% arrange(pct_F)
 ```
 
 Now create the following histogram using the ideas from the previous queries.
@@ -203,16 +209,30 @@ Now create the following histogram using the ideas from the previous queries.
 knitr::include_graphics('images/histos_pctF_by_peninsula.png')
 ```
 
+
+```{r}
+county_MI_xx <- county_MI %>%
+   mutate(pct_F = Women/TotalPop) %>%
+   select(County, TotalPop, pct_F, peninsula) 
+
+ggplot(county_MI_xx) + geom_histogram(aes(x=county_MI_xx$pct_F, fill =county_MI_xx$peninsula)) + ggtitle("Percentage of County Pop that is Female") + xlab("Percent Female") + ylab("Number of Counties") + labs(fill="Peninsula")
+```
+
+
+
 Confirm that the columns Professional, Service, Office, Construction,  and 
 Production sum up to 100 (within +- .105). There are a number of ways to do
 this. You could use `mutate` and/or use base R commands.
 
+you can tell from the summary that the error is not violated, just to be sure one can always look at a dataset this small.
+
 ```{r}
-# tot_job_type <- ???
-# 
-# summary(tot_job_type)
-# err_tol <- 0.105
-# ???
+ tot_job_type <- county_MI$Professional + county_MI$Service + county_MI$Office + county_MI$Construction + county_MI$Production
+summary(tot_job_type)
+err_tol <- 0.105
+tot_job_type 
+100-err_tol
+100+err_tol
 ```
 
 
