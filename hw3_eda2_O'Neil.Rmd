@@ -224,15 +224,16 @@ Confirm that the columns Professional, Service, Office, Construction,  and
 Production sum up to 100 (within +- .105). There are a number of ways to do
 this. You could use `mutate` and/or use base R commands.
 
-you can tell from the summary that the error is not violated, just to be sure one can always look at a dataset this small.
+you can tell from the summary that the error is not violated from the min and max values, just to be sure one can always compare the values giving true or false output.
 
 ```{r}
  tot_job_type <- county_MI$Professional + county_MI$Service + county_MI$Office + county_MI$Construction + county_MI$Production
 summary(tot_job_type)
 err_tol <- 0.105
-tot_job_type 
-100-err_tol
-100+err_tol
+lowerbound <- 100-err_tol
+upperbound <- 100+err_tol
+tot_job_type >= lowerbound
+tot_job_type <= upperbound
 ```
 
 
@@ -243,18 +244,19 @@ Use county_MI.
 Find total population by peninsula using dplyr.
 
 ```{r pop_peninsula}
-# county_MI %>%
-#   ??? %>%
-#   ???
+county_MI %>%
+   group_by(peninsula) %>%
+   summarise(sum(TotalPop))
 ```
 
 Number of counties by peninsula.
 
+By counting the number of times that peninsula occurs, you get the number of counties in each respective peninsula.
+
 ```{r numcounties_peninsula}
 # One way to do it is with the "shortcut" function count().
-# county_MI %>%
-#   ??? %>%
-#   count()
+county_MI %>%
+   count(peninsula)
 ```
 
 Repeat the two previous queries using plyr instead of dplyr.
