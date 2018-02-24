@@ -284,11 +284,13 @@ of a median income.
 
 
 ```{r summarystats_mi}
-# county_MI %>%
-#   ??? %>%
-#   summarize(???,
-#             ???,
-#             several more rows))
+ county_MI %>%
+group_by(peninsula)    %>%
+   summarize(mean(Income),
+             median(Income),
+             mean(Income, trim = .05)) 
+             
+ 
 ```
 
 
