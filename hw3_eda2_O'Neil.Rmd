@@ -262,11 +262,11 @@ county_MI %>%
 Repeat the two previous queries using plyr instead of dplyr.
 
 ```{r pop_peninsula_plyr}
-ddply(.data = county_MI, .variables =county_MI$peninsula, county_MI$TotalPop, .fun = sum(county_MI$TotalPop))
+ddply(county_MI, .(peninsula), summarise, TotalPop = sum(TotalPop))
 ```
 
 ```{r numcounties_peninsula_plyr}
-# ddply(???)
+ddply(.data = county_MI, .variables = .(county_MI$peninsula), .fun = count)
 ```
 
 
