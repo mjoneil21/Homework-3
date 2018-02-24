@@ -68,6 +68,7 @@ Let's load a few libraries we'll need:
 library(plyr)
 library(dplyr)
 library(ggplot2)
+library(psych)
 ```
 
 
@@ -284,12 +285,36 @@ of a median income.
 
 
 ```{r summarystats_mi}
+county_MI %>% 
+  group_by(peninsula) %>%
+  do(describe(.$Income)) %>%
+  select(-vars)
+
+#https://stackoverflow.com/questions/22240816/dplyr-summarise-with-multiple-return-values-from-a-single-function
+# Artem Klevstov provides three good examples on summary statistics with different packages including purrr, data.table, # and dplyr
+
+CV <- function(mean, sd){
+      (sd/mean)*100
+}
+
+#https://alstatr.blogspot.com/2013/06/measure-of-relative-variability.html Abubakar Asaad provides instructions to make the cv function
+
  county_MI %>%
 group_by(peninsula)    %>%
-   summarize(mean(Income),
-             median(Income),
-             mean(Income, trim = .05)) 
+   summarize(CV(mean = mean(Income), sd = sd(Income)),
+             IQR(Income))
              
+
+ county_MI %>%
+group_by(peninsula)    %>%
+   summarize(quantile(Income, probs = (0.05)),
+             quantile(Income, probs = (0.25)),
+             quantile(Income, probs = (0.5)),
+             quantile(Income, probs = (0.75)),
+             quantile(Income, probs = (0.95)))
+             
+ # The quantile function threw some errors when I tried to run it with seq it only gave me one column for all of the quantiles.
+ 
  
 ```
 
@@ -297,13 +322,24 @@ group_by(peninsula)    %>%
 Now look at the entire US. What are the 5th, 50th, and 95th percentile of median income by state? Sort in descending ordery by median of median income.
 
 ```{r summarystats_us}
-
+county_df %>% 
+  group_by(State) %>% 
+    summarize("5th percentile" = quantile(Income, probs = .05, na.rm = TRUE),
+            "50th Percentile" = quantile(Income, probs = .5, na.rm = TRUE),
+            "95th Percentile" = quantile(Income, probs = .95, na.rm = TRUE), 
+              medianincome = median(Income)) %>% arrange(desc(medianincome))
 ```
 
 Which states have the highest average percentage of production workers? Just return the top
 10 states and their Production values.
 
 ```{r top10production}
+State_Production <- county_df %>%
+  group_by(State) %>%
+  summarize(percent_production = mean(Production)) %>%
+  arrange(desc(percent_production))
+
+head(State_Production, 10)
 
 ```
 
@@ -311,20 +347,26 @@ Which states have the lowest average percentage of people who drive to work?
 Be careful about those NA values...
 
 ```{r lowpctdrive1}
-
+county_df %>%
+  group_by(State) %>%
+  summarize(Percent_Who_Drive = mean(Drive)) %>%
+  arrange(Percent_Who_Drive)
 ```
 
 Which counties having a total population greater than 75000 have the lowest
 percentage of people who drive to work? Display State, County and Drive.
+county_MI %>% filter(TotalPop >= 200000) %>% arrange(desc(TotalPop))
 
 ```{r lowpctdrive2}
-
+county_df %>% filter(TotalPop > 75000) %>% group_by(State, County) %>%
+  summarize(Percent_Who_Drive = mean(Drive)) %>% arrange(Percent_Who_Drive)
 ```
 
 Repeat the previous query for the state of Michigan.
 
 ```{r lowpctdrive_mi}
-
+county_MI %>% filter(TotalPop > 75000) %>% group_by(State, County) %>%
+  summarize(Percent_Who_Drive = mean(Drive)) %>% arrange(Percent_Who_Drive)
 ```
 
 
@@ -333,16 +375,25 @@ For this next question you do **not** need plyr or dplyr.
 Create a correlation matrix for total population, per capita income and child poverty. 
 
 ```{r correlation}
-# ???
+Popdata <- data.frame(county_df$TotalPop, county_df$IncomePerCap, county_df$ChildPoverty)
+cor(Popdata, y = NULL, use = "na.or.complete")
+
 ```
 
 Write a few sentences interpreting the correlation matrix.
+
+Child poverty has a strong negative relationship with income per capita which is as it should be. Likewise, Income per capita has a strong negative impact on child poverty. Total population seems to have a weak positive relationship with income per capita and an alomost nonexistant relationship with child poverty. 
 
 **Hacker Extra**: Write a function that writes out the summary statistics like
 I did in this example from our Moodle site:
 
 ```{r}
 knitr::include_graphics('images/SummaryStats_Output.png')
+```
+```{r}
+
+describeBy(county_df$IncomePerCap, group = county_df$State, digits = 4)
+
 ```
 
 
