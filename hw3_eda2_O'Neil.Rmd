@@ -68,8 +68,8 @@ Let's load a few libraries we'll need:
 library(plyr)
 library(dplyr)
 library(ggplot2)
-library(psych)
 library(tidyr)
+library(psych)
 ```
 
 
@@ -427,10 +427,9 @@ Now redo the previous plot but make it a horizontal bar plot and order the bars
 from longest to shortest.
 
 ```{r} 
-county_df$Region <- reorder(county_df$Region, county_df$TotalPop)
 county_df %>%
-ggplot(aes(x = Region, y = TotalPop)) + geom_bar(stat = "identity") + coord_flip()
-# I don't know why it does not work it reorders everything but Midwest, I would appreciate an explanation if you can figure out why this is happening 
+ggplot(aes(x = reorder(Region, -TotalPop), y = TotalPop)) + geom_bar(stat = "identity") + coord_flip()
+# I don't know why it does not work it reorders everything but Midwest, Midwest is always placed in the position that the largest bar should go. I would appreciate an explanation if you can figure out why this is happening 
 ```
 
 
@@ -447,11 +446,11 @@ knitr::include_graphics('images/stacked_bars.png')
 Hint: The tidyr package is helpful.
 
 ```{r}
-#jobtype <- several lines to create dataframe to drive the plot 
+jobtype <- gather(county_df, Construction, Office, Production, Professional, Service)
 ```
 
 ```{r}
-# ggplot(jobtype) + 
+ ggplot(jobtype) +
 #   geom_bar(???)
 
 # Here's how to save a plot to a file
