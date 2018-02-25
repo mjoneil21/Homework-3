@@ -446,12 +446,12 @@ knitr::include_graphics('images/stacked_bars.png')
 Hint: The tidyr package is helpful.
 
 ```{r}
-jobtype <- gather(county_df, Construction, Office, Production, Professional, Service)
+County_MI2 <- gather(county_MI, jobtypes, Pct, Professional:Production)
 ```
 
 ```{r}
- ggplot(jobtype) +
-#   geom_bar(???)
+MiCounties <- County_MI2 %>% filter(County %in% c('Macomb', 'Oakland', 'Wayne'))
+ggplot(MiCounties) + geom_bar(aes(x=MiCounties$County, y = Pct, fill=MiCounties$jobtypes), stat="identity") + ylab("Percent") + xlab("County") + ggtitle("Macomb, Oakland, and Wayne Proffessions") + labs(fill="Job Type")
 
 # Here's how to save a plot to a file
 ggsave('images/stacked_bars_test.png')
