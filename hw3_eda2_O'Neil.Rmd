@@ -69,6 +69,7 @@ library(plyr)
 library(dplyr)
 library(ggplot2)
 library(psych)
+library(tidyr)
 ```
 
 
@@ -415,8 +416,7 @@ a data frame to plot. Hint: You'll also want to learn about the `stat` layer in 
 
 ```{r create_df_toplot}
 pop_by_region <- county_df %>%
-ggplot(aes(x =  Region, y = TotalPop)) + geom_bar(stat = "identity")
-options(scipen = 0)
+ggplot(aes(x =  Region, y = TotalPop)) + geom_bar(stat = "identity") + ggtitle("Population by Region")
 pop_by_region
 ```
 
@@ -427,8 +427,10 @@ Now redo the previous plot but make it a horizontal bar plot and order the bars
 from longest to shortest.
 
 ```{r} 
+county_df$Region <- reorder(county_df$Region, county_df$TotalPop)
 county_df %>%
-ggplot(aes(x = reorder(Region, TotalPop), y = TotalPop)) + geom_bar(stat = "identity") + coord_flip()
+ggplot(aes(x = Region, y = TotalPop)) + geom_bar(stat = "identity") + coord_flip()
+# I don't know why it does not work it reorders everything but Midwest, I would appreciate an explanation if you can figure out why this is happening 
 ```
 
 
@@ -445,7 +447,7 @@ knitr::include_graphics('images/stacked_bars.png')
 Hint: The tidyr package is helpful.
 
 ```{r}
-# jobtype <- several lines to create dataframe to drive the plot 
+#jobtype <- several lines to create dataframe to drive the plot 
 ```
 
 ```{r}
