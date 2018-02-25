@@ -390,30 +390,22 @@ I did in this example from our Moodle site:
 ```{r}
 knitr::include_graphics('images/SummaryStats_Output.png')
 ```
-```{r}
-MattsSummarystats <- function(x) {
- Mean = mean(x)
-  print(Mean)
-}
-MattsSummarystats(county_df$TotalPop)
-```
-
-
 
 Compute the proportion of counties in the US with total population greater than 75000.
 You can do this very easily without dplyr. Hint: mean(). No need for plyr or dplyr.
 
 ```{r pctgt75k}
-# mean(???)
+x <- sum(county_df$TotalPop >75000)
+y <- sum(county_df$TotalPop < 75000)
+x/y
 ```
 
 Use dplyr and ggplot along with the pipe operator to create a histogram of SelfEmployed
 for all counties in the US with total population > 75000.
 
 ```{r histo1}
-# county_df %>%
-#   ??? %>%
-#   ggplot(???) + ???
+ county_df %>%
+   filter(TotalPop > 75000) %>% ggplot(mapping = aes(SelfEmployed)) + geom_histogram() + ggtitle("Self Employed for counties over 75,000 Residents")
 ```
 
 
@@ -422,21 +414,21 @@ a data frame to plot. Hint: You'll also want to learn about the `stat` layer in 
 
 
 ```{r create_df_toplot}
-# pop_by_region <- county_df %>%
-#   ??? %>%
-#   ???)
+pop_by_region <- county_df %>%
+ggplot(aes(x =  Region, y = TotalPop)) + geom_bar(stat = "identity")
+options(scipen = 0)
+pop_by_region
 ```
 
-```{r barchart}
-# ggplot(data=pop_by_region) + ???
-```
+
 
 
 Now redo the previous plot but make it a horizontal bar plot and order the bars
 from longest to shortest.
 
-```{r}
-
+```{r} 
+county_df %>%
+ggplot(aes(x = reorder(Region, TotalPop), y = TotalPop)) + geom_bar(stat = "identity") + coord_flip()
 ```
 
 
