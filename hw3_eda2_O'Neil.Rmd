@@ -391,9 +391,11 @@ I did in this example from our Moodle site:
 knitr::include_graphics('images/SummaryStats_Output.png')
 ```
 ```{r}
-
-describeBy(county_df$IncomePerCap, group = county_df$State, digits = 4)
-
+MattsSummarystats <- function(x) {
+ Mean = mean(x)
+  print(Mean)
+}
+MattsSummarystats(county_df$TotalPop)
 ```
 
 
